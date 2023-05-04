@@ -17,9 +17,6 @@ TEST_CASE("distance between two coordinates", "") {
     unsigned distance = unsigned(A.dist(B));
 
     REQUIRE(distance == 4788);
-    
-
-
 }
 
 TEST_CASE("Airports constructr", "") {
@@ -190,6 +187,29 @@ TEST_CASE("Airports constructr", "") {
     REQUIRE(sample.neighbors("8810")==correct_destinations);
     REQUIRE(distances==correct_distances);
 
+}
+
+TEST_CASE("Multiple edges between source and destination case", "") {
+    const V2D correct_airport =   { \
+    {"507","51.4706", "-0.461941"},\
+    {"26","68.534401", "-89.808098"},\
+    {"3127","28.200899124145508", "83.98210144042969"},\
+    {"8810","53.552776", "10.006683"},};
+
+    const V2D correct_route =   { \
+    {"507","26"},\
+    {"507","3127"},\
+    {"26","3127"},\
+    {"26","8810"},\
+    {"8810","507"},\
+    {"3127","8810"},\
+    {"507","26"}};
+
+    Airports sample(correct_airport,correct_route,15000);
+    std::vector<std::string> correct_neighbor = {"26", "3127", "26"};
+    std::vector<std::string> neighbor = sample.neighbors("507");
+
+    REQUIRE(neighbor == correct_neighbor);
 }
 
 TEST_CASE("shortest path between two airports", "") {

@@ -110,3 +110,17 @@ V2D V2D_to_routesV2D(const V2D & route_data) {
     return route;
 }
 
+V2D V2D_to_countriesV2D(const V2D & airport_data) {
+    V2D countries;
+    
+
+    for(vector<string> row_data : airport_data) {
+        vector<string> airport_row;
+        airport_row.push_back(row_data.at(0)); //airport id
+        airport_row.push_back(row_data.at(3));//country
+
+        countries.push_back(airport_row);
+    }
+
+    return countries;
+}

@@ -123,8 +123,25 @@ TEST_CASE("file_to_V2D route case", "") {
     REQUIRE(route == correct_route);
 }
 
+TEST_CASE("file_to_V2D countries case", "") {
 
+    V2D airport_data = file_to_V2D("../data/airport_sample_data.csv");
 
+    const V2D correct_airport_data =   { \
+    { "507", "\"London Heathrow Airport\"", "\"London\"", "\"United Kingdom\"","\"LHR\"", "\"EGLL\"", "51.4706", "-0.461941", "83", "0", "\"E\"", "\"Europe/London\"", "\"airport\"", "\"OurAirports\"" },\
+    { "26", "\"Kugaaruk Airport\"","\"Pelly Bay\"", "\"Canada\"", "\"YBB\"", "\"CYBB\"", "68.534401", "-89.808098", "56", "-7", "\"A\"", "\"America/Edmonton\"", "\"airport\"", "\"OurAirports\"" },\
+    {"3127", "\"Pokhara Airport\"", "\"Pokhara\"", "\"Nepal\"", "\"PKR\"", "\"VNPK\"", "28.200899124145508", "83.98210144042969", "2712", "5.75", "\"N\"", "\"Asia/Katmandu\"", "\"airport\"", "\"OurAirports\"" },\
+    { "8810", "\"Hamburg Hbf\"","\"Hamburg\"", "\"Germany\"", "\"ZMB\"", "\\N", "53.552776", "10.006683", "30", "1","\"E\"", "\"Europe/Berlin\"", "\"station\"", "\"User\"" } };
 
+    REQUIRE(airport_data == correct_airport_data);
 
+    V2D countries = V2D_to_countriesV2D(airport_data);
 
+    const V2D correct_countries =   { \
+    {"507","\"United Kingdom\""},\
+    {"26","\"Canada\""},\
+    {"3127","\"Nepal\""},\
+    {"8810","\"Germany\""},};
+
+    REQUIRE(countries == correct_countries);
+}

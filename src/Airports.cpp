@@ -78,7 +78,7 @@ return 2*6371*asin(sqrt(sin((other.lat-lat)/2*degs_to_rads)*sin((other.lat-lat)/
 // airport constructor
 Airports::Airports(V2D airports, V2D routes, unsigned num_of_airports) {
 
-    ports.resize(num_of_airports);
+    ports.resize(num_of_airports+1);
     for(std::vector<std::string> row_data : airports) {
         Coordinates location(stod(row_data.at(1),NULL),stod(row_data.at(2),NULL));
         string name=row_data.at(0);
@@ -135,11 +135,11 @@ vector<string> Airports::neighbors(string port) {
 vector<pair<string,unsigned>> Airports::Dijkstra(string src, string dest) {
     //initialize dist
     vector<unsigned> dist;
-    dist.resize(ports.size());
+    dist.resize(ports.size()+1);
 
     //initialize prev
     vector<string> prev;
-    prev.resize(ports.size());
+    prev.resize(ports.size()+1);
 
     vector<string> visited;
     

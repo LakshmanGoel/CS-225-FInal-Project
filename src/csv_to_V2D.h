@@ -46,5 +46,5 @@ V2D V2D_to_airportsV2D(const V2D & airport_data);
 
 V2D V2D_to_routesV2D(const V2D & airport_data);
 
-
+V2D V2D_to_countriesV2D(const V2D & airport_data);
 
