@@ -23,7 +23,7 @@ class PageRank {
 public:
     PageRank(int n, Airports airports);
     /**
-    * @brief generates a spanning tree of the graph from a given node.
+    * @brief Finds the most popular airport
     * 
     * @param start_name name of airport to start from
     * 
