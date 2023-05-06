@@ -80,6 +80,7 @@ Airports::Airports(V2D airports, V2D routes, unsigned num_of_airports) {
 
     ports.resize(num_of_airports+1);
     for(std::vector<std::string> row_data : airports) {
+        //cout << row_data.at(1) << " Airport ctr" << std::endl;
         Coordinates location(stod(row_data.at(1),NULL),stod(row_data.at(2),NULL));
         string name=row_data.at(0);
         vertex port(location,name);
@@ -90,6 +91,30 @@ Airports::Airports(V2D airports, V2D routes, unsigned num_of_airports) {
         edge route(&ports.at(stod(row_data.at(0))).first,\
             &ports.at(stod(row_data.at(1))).first,\
             dist(row_data.at(0),row_data.at(1)));
+        
+        flights.push_back(route);
+        ports.at(stod(row_data.at(0))).second.push_back(&flights.back());
+    }
+}
+
+// airport constructor with distance for testing
+Airports::Airports(V2D airports, V2D routes, unsigned num_of_airports, bool distance) {
+    if(!distance) {
+        return;
+    }
+
+    ports.resize(num_of_airports+1);
+    for(std::vector<std::string> row_data : airports) {
+        Coordinates location(stod(row_data.at(1),NULL),stod(row_data.at(2),NULL));
+        string name=row_data.at(0);
+        vertex port(location,name);
+        ports.at(stod(row_data.at(0))).first=port;
+    }
+
+    for(vector<string> row_data : routes) {
+        edge route(&ports.at(stod(row_data.at(0))).first,\
+            &ports.at(stod(row_data.at(1))).first,\
+            stod(row_data.at(2)));
         
         flights.push_back(route);
         ports.at(stod(row_data.at(0))).second.push_back(&flights.back());
@@ -135,15 +160,11 @@ vector<string> Airports::neighbors(string port) {
 vector<pair<string,unsigned>> Airports::Dijkstra(string src, string dest) {
     //initialize dist
     vector<unsigned> dist;
-    dist.resize(ports.size()+1);
+    dist.resize(ports.size());
 
     //initialize prev
     vector<string> prev;
-    prev.resize(ports.size()+1);
-
-    vector<string> visited;
-    
-
+    prev.resize(ports.size());
 
     for(pair<vertex,list<edge*>> port : ports) {
         dist.at(stod(port.first.port_name)) = numeric_limits<unsigned>::max();
@@ -151,7 +172,9 @@ vector<pair<string,unsigned>> Airports::Dijkstra(string src, string dest) {
     }
 
     dist.at(stod(src)) = 0;
-    visited.push_back(src);
+    vector<bool> visited;
+    visited.resize(ports.size());
+    visited.at(stod(src))=true;
 
     //initialize priority queue
     priority_queue<priority_vertex> queue;
@@ -164,14 +187,7 @@ vector<pair<string,unsigned>> Airports::Dijkstra(string src, string dest) {
         priority_vertex curr_node = queue.top();
         queue.pop();
         for(string bor : neighbors(curr_node.name_port)) {
-            bool new_node=true;
-            for(string been_there : visited) {
-                if(been_there==bor) {
-                    new_node=false;
-                }
-            }
-
-            if(new_node==false) {
+            if(visited.at(stod(bor))) {
                 continue;
             }
 
@@ -181,7 +197,8 @@ vector<pair<string,unsigned>> Airports::Dijkstra(string src, string dest) {
                 queue.push(v);
                 prev.at(stod(bor))= curr_node.name_port;
             }
-        }        
+        }
+        visited.at(stod(curr_node.name_port))=true;
     }
 
     vector<pair<string,unsigned>> shortest_path;
@@ -194,4 +211,51 @@ vector<pair<string,unsigned>> Airports::Dijkstra(string src, string dest) {
     reverse(shortest_path.begin(),shortest_path.end());
         
     return shortest_path;
+}
+
+vector<tuple<string, string, int>> Airports::Spanning_bfs (string start_name) {
+
+    vector<bool> visited (ports.size(), false);
+    queue<string> to_visit;
+    vector<pair<string, int>> help_tree (ports.size(), make_pair("", -1));
+
+    //initialize the queue and spanTree with start node
+    to_visit.push(start_name);
+    help_tree.at(stod(start_name)).first = "NULL"; // prev of start is "NULL"
+    help_tree.at(stod(start_name)).second = 0; // depth of start is 0
+
+    while (!to_visit.empty()) {
+        const string & curr_node = to_visit.front();
+        to_visit.pop();
+
+        visited.at(stod(curr_node)) = true;
+
+        /* update depth of all unvisited neigbours to be depth+1 */
+        int depth = help_tree.at(stod(curr_node)).second;
+        for (const string & neigbour : neighbors(curr_node)) {
+            pair<string, int> &span_info = help_tree.at(stod(neigbour));
+
+            if (span_info.second == -1) {
+                span_info.second = depth + 1;
+                span_info.first = curr_node;
+            }
+            
+            /* add unvisited neighbours to be visited */
+            if (!visited.at(stod(neigbour))) {
+                to_visit.push(neigbour);
+            }
+        }
+    }
+
+    //copy all reachable nodes (depth != -1) to return value
+    vector<tuple<string, string, int>> spanTree;
+    for (unsigned int i = 0; i < help_tree.size(); i++) {
+        pair<string, int> elem = help_tree[i];
+        if(elem.second != -1){
+            auto tup = make_tuple(to_string(i), elem.first, elem.second);
+            spanTree.push_back(tup);
+        }
+    }
+    
+    return spanTree;
 }

@@ -78,11 +78,34 @@ V2D V2D_to_airportsV2D(const V2D & airport_data) {
 
     for(vector<string> row_data : airport_data) {
         vector<string> airport_row;
+        if (row_data.size() < 7 || row_data.size() > 14) {
+            continue;
+        }
         airport_row.push_back(row_data.at(0)); //airport id
         airport_row.push_back(row_data.at(6));//latitude
         airport_row.push_back(row_data.at(7));//longitude
 
         airport.push_back(airport_row);
+    }
+
+    return airport;
+}
+
+V2D V2D_to_country_airportsV2D(const V2D & airport_data, std::string country) {
+    V2D airport;
+
+    for(vector<string> row_data : airport_data) {
+        vector<string> airport_row;
+        if (row_data.size() < 7 || row_data.size() > 14) {
+            continue;
+        }
+        if (row_data.at(3) == country) {
+            airport_row.push_back(row_data.at(0)); //airport id
+            airport_row.push_back(row_data.at(6));//latitude
+            airport_row.push_back(row_data.at(7));//longitude
+
+            airport.push_back(airport_row);
+        }
     }
 
     return airport;
@@ -94,7 +117,12 @@ V2D V2D_to_routesV2D(const V2D & route_data) {
 
     for(vector<string> row_data : route_data) {
         vector<string> route_row;
-
+        if (row_data.size() < 7 || row_data.size() > 14) {
+            continue;
+        }
+        if (row_data.at(3) == "\\N" || row_data.at(5) == "\\N" || row_data.at(3) == "\\N" || row_data.at(5) == "\\N") {
+            continue;
+        }
         //filter non direct routes
         if(row_data.at(7)!="0") {
             continue;

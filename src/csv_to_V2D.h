@@ -48,3 +48,5 @@ V2D V2D_to_routesV2D(const V2D & airport_data);
 
 V2D V2D_to_countriesV2D(const V2D & airport_data);
 
+V2D V2D_to_country_airportsV2D(const V2D & airport_data, std::string country);
+
