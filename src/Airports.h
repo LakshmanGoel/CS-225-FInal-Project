@@ -67,7 +67,7 @@ struct Airports {
     unsigned dist(string A, string B);
 
     /**
-    * @brief generates a spanning tree of the graph from a given node.
+    * @brief generates shortest distance
     * 
     * @param src Unique ID of starting airport
     * @param dest Unique ID of destination airport
