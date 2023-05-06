@@ -21,25 +21,6 @@
 
 using namespace std;
 
-AdjMatrix::AdjMatrix(Airports airport, V2D countries, std::string country, unsigned num_airports) {
-    matrix.resize(num_airports+1);
-    for (unsigned i = 0; i < num_airports+1; ++i) {
-        matrix.at(i).resize(num_airports+1);
-        for (unsigned j = 0; j < num_airports+1; ++j) {
-            matrix.at(i).at(j) = 0;
-        }
-    }
-    for (std::vector<std::string> row : countries) {
-        if (row.at(1) == country) {
-            std::vector<std::string> destinations(num_airports);
-            destinations = airport.neighbors(row.at(0));
-            for (std::string destination : destinations) {
-                matrix.at(std::stod(row.at(0))).at(std::stod(destination))++;
-            }
-        }
-    }
-}
-
 
 PageRank::PageRank(int n, Airports airports): num_nodes(n), pagerank(n, 1.0/n), airports(airports) {}
 

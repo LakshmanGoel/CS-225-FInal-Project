@@ -90,7 +90,6 @@ set(eigen_dir ${CMAKE_SOURCE_DIR}/eigen)
 
 # Run CMakeLists in lib_dir to build our required libraries.
 add_subdirectory(${lib_dir})
-add_subdirectory(${eigen_dir})
 
 # Run CMakeLists in src_dir to build the student's code.
 add_subdirectory(${src_dir})
